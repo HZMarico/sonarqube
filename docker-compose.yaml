@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  sonarqube:
+    image: sonarqube:8.9-community
+    restart: always
+    depends_on:
+      - db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - /opt/sonarqube/data:/opt/sonarqube/data # es数据
+      - /opt/sonarqube/extensions:/opt/sonarqube/extensions # 插件数据
+      - /opt/sonarqube/logs:/opt/sonarqube/logs # 日志数据
+      - /opt/sonarqube/lib:/opt/sonarqube/lib # 官方类库
+    ports:
+      - "9000:9000"
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    volumes:
+      - /opt/postgresql:/var/lib/postgresql
